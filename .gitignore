@@ -1,0 +1,13 @@
+# Sanal ortam
+venv/
+
+# Python cache dosyaları
+__pycache__/
+*.pyc
+
+# IDE dosyaları
+.vscode/
+
+
+# Ortam dosyaları
+.env

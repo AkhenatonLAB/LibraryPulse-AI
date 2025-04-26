@@ -1,49 +1,38 @@
-import os
-import csv
-from flask import Flask, jsonify, request
 import firebase_admin
 from firebase_admin import credentials, db
-from dotenv import load_dotenv
+import csv
 
-# .env dosyasını yükle
-load_dotenv()
-
-app = Flask(__name__)
-
-# Firebase bağlantısını kur
-cred = credentials.Certificate('serviceAccountKey.json')  # Firebase Admin SDK JSON dosyası
+# 1. Firebase bağlantısı kurma
+cred = credentials.Certificate('serviceAccountKey.json')  # Service Account Key JSON dosyanız
 firebase_admin.initialize_app(cred, {
-    'databaseURL': os.getenv('FIREBASE_DATABASE_URL')  # .env dosyasındaki Firebase URL'sini kullan
+    'databaseURL': 'https://librarypulse-2f7e9-default-rtdb.europe-west1.firebasedatabase.app/'
 })
 
-# CSV'den sayıyı oku
+# 2. CSV'den sayıyı okuma
 def read_number_from_csv(csv_file):
     try:
         with open(csv_file, mode='r') as file:
             reader = csv.reader(file)
-            # CSV'nin ilk satırını okuyalım (veya istediğiniz satırı)
-            row = next(reader)
-            number = int(row[0])  # CSV'deki ilk sütundaki sayıyı al
+            row = next(reader)  # İlk satırı al
+            number = int(row[0])  # İlk sütundaki sayıyı al
             return number
     except Exception as e:
-        print(f"Error reading CSV: {e}")
+        print(f"Hata: CSV okuma sırasında bir sorun oluştu: {e}")
         return None
 
-@app.route('/update_people_count', methods=['PUT'])
-def update_people_count():
+# 3. Firebase'e yeni sayıyı gönderme
+def set_number_of_people(new_value):
+    ref = db.reference('number_of_people')  # Firebase'deki 'number_of_people' alanına referans
+    ref.set(new_value)  # Yeni değeri (PUT) olarak gönder
+    print(f"Başarıyla 'number_of_people' değeri {new_value} olarak güncellendi.")
+
+if __name__ == "__main__":
     # CSV'den sayıyı oku
-    csv_file = 'people_count.csv'  # CSV dosyasının yolu
-    new_count = read_number_from_csv(csv_file)
-    #new_count = 22 bu kısmı ai ile birlikte değiştir
+    csv_file = 'number_of_people.csv'  # CSV dosyasının yolu
+    new_value = read_number_from_csv(csv_file)
     
-    if new_count is None:
-        return jsonify({"error": "Failed to read number from CSV"}), 400
-    
-    # Firebase'deki veriyi güncelle
-    ref = db.reference('number_of_people')  # Firebase'deki verinin yolu
-    ref.set(new_count)  # Yeni değeri Firebase'e kaydediyoruz
-
-    return jsonify({"message": "People count updated successfully", "number_of_people": new_count}), 200
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    if new_value is not None:
+        # Sayıyı Firebase'e gönder
+        set_number_of_people(new_value)
+    else:
+        print("CSV'den geçerli bir sayı okunamadı.")

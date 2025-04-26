@@ -1,10 +1,33 @@
-# LibraryPulse-AI
-AI files for Library Pulse Project, created by Atilim University students, for Atilim Univesity students. 
+🚀 How to Run
 
-This readme file contains information about AI agent of this project.
+After installing all required packages:
 
-Important: Because of Mediapipe doesn't has a available package for latest Python version 3.13, please use Python 3.10 while running this AI agent
+python main.py
 
-Currently, we are using many debug features for our sake (etc. arrows points which direction a person has moving) they will be removed or added into a debug mode for performance
+(Replace main.py with your actual file name if it differs.)
+🛠️ Current Features
 
-Known Issues: Because of our test environment debug arrows are showing reversed direction of a persons movement this is caused of mirrored image frames we are getting, we will solve it when we had our proper test environment
+    Real-time person tracking using YOLOv8 and MediaPipe.
+
+    Counter for the number of people entering and leaving a specified area.
+
+    Debug arrows showing movement direction (currently enabled for testing purposes).
+
+🐞 Known Issues
+
+    Debug arrows may show reversed directions due to mirrored camera frames.
+    This will be fixed when we transition to a proper, non-mirrored test environment.
+
+📁 Project Structure
+File/Folder	Description
+main.py	Main Python file that handles camera input, tracking, and counting logic.
+yolo11n.pt	Custom YOLO model file used for tracking.
+requirements.txt	Python packages required to run the project.
+README.md	You are here! Project documentation.
+📌 Notes
+
+    Debug features (like direction arrows) will either be removed or optimized (added to a debug mode) for production use.
+
+    Project is still in active development; feedback and testing results are highly appreciated.
+
+✨ Developed with care by Atılım University Students ✨
